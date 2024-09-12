@@ -5,6 +5,7 @@ const {
   InteractionCollector,
   EmbedBuilder,
   Embed,
+  ActivityType,
 } = require("discord.js");
 
 const client = new Client({
@@ -18,6 +19,11 @@ const client = new Client({
 
 client.on("ready", (c) => {
   console.log(`✅${c.user.tag} is online.`);
+
+  client.user.setActivity({
+    name: "PSG Slave bot",
+    type: ActivityType.Streaming,
+  });
 });
 
 client.on("messageCreate", (message) => {
