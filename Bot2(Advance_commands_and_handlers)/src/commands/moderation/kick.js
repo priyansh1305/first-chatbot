@@ -6,8 +6,8 @@ const {
 } = require("discord.js");
 
 module.exports = {
-  name: "ban",
-  description: "Bans a member from this server.",
+  name: "kick",
+  description: "Kick a member from this server.",
   //devonly : Boolean,
   //testonly : Boolean,
   //deleted: true,
@@ -15,18 +15,18 @@ module.exports = {
   options: [
     {
       name: "target-user",
-      description: "the user you want to ban.",
+      description: "the user you want to Kick.",
       required: true,
       type: ApplicationCommandOptionType.Mentionable,
     },
     {
       name: "reason",
-      description: "The reason for banning.",
+      description: "The reason for Kick.",
       type: ApplicationCommandOptionType.String,
     },
   ],
-  permissionsRequired: [PermissionFlagsBits.BanMembers],
-  botpermissions: [PermissionFlagsBits.BanMembers],
+  permissionsRequired: [PermissionFlagsBits.KickMembers],
+  botpermissions: [PermissionFlagsBits.KickMembers],
   /**
    *
    * @param {Client} client
@@ -44,7 +44,7 @@ module.exports = {
     }
     if (tragetUserId === interaction.guild.ownerId) {
       await interaction.editReply(
-        "You can't ban that user because they are the server owner."
+        "You can't kick that user because they are the server owner."
       );
       return;
     }
@@ -55,25 +55,25 @@ module.exports = {
 
     if (targetUserRolePosition >= requestUserRolePosition) {
       await interaction.editReply(
-        "you can't ban the user because they have the same/higher role than you."
+        "you can't kick the user because they have the same/higher role than you."
       );
       return;
     }
 
     if (targetUserRolePosition >= botRolePosition) {
       await interaction.editReply(
-        "I cant ban that user because they have the same/hgiher role than me."
+        "I cant kick that user because they have the same/hgiher role than me."
       );
       return;
     }
-    // Ban the targetuser
+    // kick the targetuser
     try {
-      await targetUser.ban({ reason });
+      await targetUser.kick({ reason });
       await interaction.editReply(
-        `**User**:${targetUser} was banned \n**reason**: ${reason}`
+        `**User**:${targetUser} was kick \n**reason**: ${reason}`
       );
     } catch (error) {
-      console.log(`There was an error when banning: ${error},`);
+      console.log(`There was an error when kick: ${error},`);
     }
   },
 };
