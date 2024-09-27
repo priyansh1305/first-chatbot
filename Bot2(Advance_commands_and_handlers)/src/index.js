@@ -7,6 +7,7 @@ const {
   Embed,
   ActivityType,
 } = require("discord.js");
+const mongoose = require("mongoose");
 const eventHandler = require("./handlers/eventHandler");
 
 const client = new Client({
@@ -17,5 +18,13 @@ const client = new Client({
     IntentsBitField.Flags.MessageContent,
   ],
 });
-eventHandler(client);
-client.login(process.env.TOKEN);
+(async () => {
+  await mongoose.connect(process.env.MONGODB_URI);
+  try {
+    console.log("connected to DB.");
+    client.login(process.env.TOKEN);
+    eventHandler(client);
+  } catch (error) {
+    console.log(`Error:${error}`);
+  }
+})();
