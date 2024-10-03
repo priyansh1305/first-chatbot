@@ -28,15 +28,17 @@ module.exports = {
   callback: async (client, interaction) => {
     const scope = interaction.options.getString("scope") || "global"; // Default to global commands
 
+    // Defer the reply to give more time for the bot to process the command
+    await interaction.deferReply({ ephemeral: true });
+
     try {
       let commands;
 
       // Fetch either global or guild-specific commands
       if (scope === "guild") {
         if (!guildId) {
-          return interaction.reply({
+          return interaction.editReply({
             content: `❌ Guild ID is not set in the environment variables.`,
-            ephemeral: true,
           });
         }
         commands = await rest.get(
@@ -48,9 +50,8 @@ module.exports = {
 
       // If there are no commands, notify the user
       if (!commands || commands.length === 0) {
-        return interaction.reply({
+        return interaction.editReply({
           content: `No ${scope} slash commands found.`,
-          ephemeral: true,
         });
       }
 
@@ -59,15 +60,13 @@ module.exports = {
         .map((cmd) => `**${cmd.name}** (ID: ${cmd.id})`)
         .join("\n");
 
-      await interaction.reply({
+      await interaction.editReply({
         content: `Here are the ${scope} commands:\n${commandList}`,
-        ephemeral: true,
       });
     } catch (error) {
       console.error("Error fetching commands:", error);
-      await interaction.reply({
+      await interaction.editReply({
         content: `❌ There was an error fetching the ${scope} commands.`,
-        ephemeral: true,
       });
     }
   },

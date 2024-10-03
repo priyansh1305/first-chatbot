@@ -35,15 +35,17 @@ module.exports = {
     const commandName = interaction.options.getString("command-name"); // Get the command name
     const scope = interaction.options.getString("scope") || "global"; // Get scope (global or guild)
 
+    // Defer reply to handle long processing times
+    await interaction.deferReply({ ephemeral: true });
+
     try {
       let commands;
 
       // Fetch either global or guild-specific commands
       if (scope === "guild") {
         if (!guildId) {
-          await interaction.reply({
+          await interaction.editReply({
             content: `❌ Guild ID is not set in the environment variables.`,
-            ephemeral: true,
           });
           return;
         }
@@ -58,9 +60,8 @@ module.exports = {
       const commandToDelete = commands.find((cmd) => cmd.name === commandName);
 
       if (!commandToDelete) {
-        await interaction.reply({
+        await interaction.editReply({
           content: `❌ Command with name "${commandName}" not found.`,
-          ephemeral: true,
         });
         return;
       }
@@ -76,15 +77,13 @@ module.exports = {
         );
       }
 
-      await interaction.reply({
+      await interaction.editReply({
         content: `✅ Successfully deleted the command "${commandToDelete.name}".`,
-        ephemeral: true,
       });
     } catch (error) {
       console.error("Error deleting command:", error);
-      await interaction.reply({
+      await interaction.editReply({
         content: `❌ There was an error deleting the command.`,
-        ephemeral: true,
       });
     }
   },
